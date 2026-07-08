@@ -1,0 +1,1888 @@
+<!DOCTYPE html>
+<!-- saved from url=(0044)https://www.genspark.ai/api/files/s/SEaUarI1 -->
+<html lang="zh-TW"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>一九二八 贈品券管理系統</title>
+    <link rel="stylesheet" href="./index_files/all.min.css">
+    <script src="./index_files/chart.js.下載"></script>
+    <script src="./index_files/xlsx.full.min.js.下載"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', 'PingFang TC', Arial, sans-serif;
+            background: #1A0F0A;
+            color: #F5F0E6;
+            line-height: 1.6;
+        }
+
+        /* 登入頁面 */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-box {
+            background: rgba(26, 15, 10, 0.95);
+            border: 2px solid #D94F04;
+            border-radius: 20px;
+            padding: 50px 40px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 10px 40px rgba(217, 79, 4, 0.3);
+        }
+
+        .login-title {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #D94F04;
+            text-align: center;
+            margin-bottom: 15px;
+            letter-spacing: 8px;
+        }
+
+        .login-subtitle {
+            font-size: 1.3rem;
+            color: #F5F0E6;
+            text-align: center;
+            margin-bottom: 40px;
+            letter-spacing: 2px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+            color: #F5F0E6;
+            margin-bottom: 10px;
+        }
+
+        .form-label i {
+            margin-right: 10px;
+            color: #F5A623;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 15px;
+            background: rgba(245, 240, 230, 0.1);
+            border: 1px solid #D94F04;
+            border-radius: 8px;
+            color: #F5F0E6;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #F5A623;
+            background: rgba(245, 240, 230, 0.15);
+        }
+
+        .form-select option {
+            background: #1A0F0A;
+            color: #F5F0E6;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #D94F04, #F5A623);
+            border: none;
+            border-radius: 8px;
+            color: #F5F0E6;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(217, 79, 4, 0.4);
+        }
+
+        /* 主要介面 */
+        .main-container {
+            display: none;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: rgba(26, 15, 10, 0.98);
+            border-right: 2px solid #D94F04;
+            overflow-y: auto;
+            z-index: 1000;
+            transition: transform 0.3s;
+        }
+
+        .sidebar-header {
+            padding: 25px 20px;
+            background: linear-gradient(135deg, #D94F04, #F5A623);
+            text-align: center;
+            border-bottom: 2px solid #F5A623;
+        }
+
+        .sidebar-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #F5F0E6;
+            letter-spacing: 3px;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-subtitle {
+            font-size: 0.9rem;
+            color: #F5F0E6;
+            opacity: 0.9;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 15px 0;
+        }
+
+        .menu-item {
+            padding: 15px 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+            display: flex;
+            align-items: center;
+        }
+
+        .menu-item:hover {
+            background: rgba(217, 79, 4, 0.2);
+            border-left-color: #F5A623;
+        }
+
+        .menu-item.active {
+            background: rgba(217, 79, 4, 0.3);
+            border-left-color: #D94F04;
+        }
+
+        .menu-item i {
+            margin-right: 12px;
+            width: 20px;
+            color: #F5A623;
+        }
+
+        .content-area {
+            margin-left: 250px;
+            padding: 30px;
+            min-height: 100vh;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .content-title {
+            font-size: 2rem;
+            color: #D94F04;
+            display: flex;
+            align-items: center;
+        }
+
+        .content-title i {
+            margin-right: 15px;
+        }
+
+        .logout-btn {
+            padding: 10px 25px;
+            background: rgba(217, 79, 4, 0.8);
+            border: 1px solid #F5A623;
+            border-radius: 8px;
+            color: #F5F0E6;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #D94F04;
+        }
+
+        /* 儀表板 */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-card {
+            background: rgba(217, 79, 4, 0.1);
+            border: 1px solid #D94F04;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(217, 79, 4, 0.2);
+        }
+
+        .dashboard-icon {
+            font-size: 3rem;
+            color: #F5A623;
+            margin-bottom: 15px;
+        }
+
+        .dashboard-label {
+            font-size: 0.95rem;
+            color: #F5F0E6;
+            margin-bottom: 10px;
+            opacity: 0.8;
+        }
+
+        .dashboard-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #D94F04;
+        }
+
+        /* 表單 */
+        .form-card {
+            background: rgba(217, 79, 4, 0.05);
+            border: 1px solid #D94F04;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #D94F04, #F5A623);
+            color: #F5F0E6;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 表格 */
+        .table-container {
+            overflow-x: auto;
+            background: rgba(217, 79, 4, 0.05);
+            border: 1px solid #D94F04;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #D94F04, #F5A623);
+        }
+
+        th {
+            padding: 15px;
+            text-align: center;
+            color: #F5F0E6;
+            font-weight: bold;
+            border: 1px solid rgba(245, 240, 230, 0.2);
+        }
+
+        td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid rgba(217, 79, 4, 0.2);
+            color: #F5F0E6;
+        }
+
+        tbody tr:nth-child(even) {
+            background: rgba(217, 79, 4, 0.05);
+        }
+
+        tbody tr:hover {
+            background: rgba(217, 79, 4, 0.15);
+        }
+
+        /* 分析頁籤 */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 12px 25px;
+            background: rgba(217, 79, 4, 0.2);
+            border: 1px solid #D94F04;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #F5F0E6;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #D94F04, #F5A623);
+        }
+
+        .tab:hover {
+            background: rgba(217, 79, 4, 0.4);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* 手機版響應式 */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+
+            .content-area {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .login-box {
+                padding: 30px 20px;
+            }
+
+            .login-title {
+                font-size: 2rem;
+                letter-spacing: 4px;
+            }
+
+            .menu-hamburger {
+                display: block;
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                z-index: 1001;
+                background: #D94F04;
+                border: none;
+                padding: 10px 15px;
+                border-radius: 8px;
+                color: #F5F0E6;
+                font-size: 1.5rem;
+                cursor: pointer;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .tab {
+                width: 100%;
+            }
+        }
+
+        .menu-hamburger {
+            display: none;
+        }
+
+        /* 提示訊息 */
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-success {
+            background: rgba(40, 167, 69, 0.2);
+            border: 1px solid #28a745;
+            color: #28a745;
+        }
+
+        .alert-warning {
+            background: rgba(255, 193, 7, 0.2);
+            border: 1px solid #ffc107;
+            color: #ffc107;
+        }
+
+        .alert-danger {
+            background: rgba(220, 53, 69, 0.2);
+            border: 1px solid #dc3545;
+            color: #dc3545;
+        }
+
+        /* 券號顯示卡片 */
+        .voucher-card {
+            background: rgba(217, 79, 4, 0.1);
+            border: 2px solid #D94F04;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .voucher-card-header {
+            font-size: 1.3rem;
+            color: #F5A623;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .voucher-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .voucher-info-item {
+            padding: 12px;
+            background: rgba(245, 240, 230, 0.05);
+            border-radius: 8px;
+        }
+
+        .voucher-info-label {
+            font-size: 0.9rem;
+            color: #F5A623;
+            margin-bottom: 5px;
+        }
+
+        .voucher-info-value {
+            font-size: 1.1rem;
+            color: #F5F0E6;
+            font-weight: bold;
+        }
+
+        /* 圖表容器 */
+        .chart-container {
+            background: rgba(217, 79, 4, 0.05);
+            border: 1px solid #D94F04;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            height: 400px;
+        }
+
+        .chart-title {
+            font-size: 1.3rem;
+            color: #F5A623;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    </style>
+<style>
+    .genspark-notice-dialog {
+      display: flex;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 10001;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .genspark-notice-content {
+      background-color: white;
+      border-radius: 8px;
+      max-width: 600px;
+      width: 90%;
+      box-sizing: border-box;
+      padding: 10px 30px 30px 30px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      font-size: 16px;
+    }
+
+    .genspark-notice-title {
+      color: #000;
+      font-family: Arial;
+      font-size: 20px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 150%; 
+    }
+
+    .genspark-notice-list {
+      margin: 24px 0;
+      
+      color: #606366;
+      font-family: Arial;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 150%;
+      padding-left: 12px;
+    }
+
+    .genspark-notice-list li {
+      margin-bottom: 12px;
+      list-style-type: disc;
+    }
+
+    .genspark-notice-list li a {
+      color: #606366;
+      text-decoration: underline;
+    }
+
+    .genspark-notice-checkbox {
+      display: flex;
+      align-items: center;
+      margin-top: 20px;
+      gap: 10px;
+
+      color: #232425;
+
+      font-family: Arial;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
+    }
+
+    .genspark-notice-actions {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+      
+    .genspark-notice-ok {
+      color: #232425;
+
+      text-align: center;
+      font-family: Arial;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 150%; 
+
+      cursor: pointer;
+      display: flex;
+      height: 40px;
+      padding: 6px 14px;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      align-self: stretch;
+      border-radius: 8px;
+      border: 1px solid #000;
+      box-sizing: border-box;
+      width: 100%;
+    }
+  </style></head>
+<body>
+    <!-- 登入頁面 -->
+    <div id="loginPage" class="login-container">
+        <div class="login-box">
+            <div class="login-title">一九二八</div>
+            <div class="login-subtitle">贈品券管理系統</div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-store"></i>
+                        請選擇門店
+                    </label>
+                    <select id="storeSelect" class="form-select" required="">
+                        <option value="">-- 請選擇 --</option>
+                        <option value="高流店">高流店</option>
+                        <option value="一玖居酒屋">一玖居酒屋</option>
+                        <option value="鳳山店">鳳山店</option>
+                        <option value="總管理處">總管理處</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-lock"></i>
+                        密碼
+                    </label>
+                    <input type="password" id="passwordInput" class="form-input" placeholder="請輸入密碼" required="">
+                </div>
+                
+                <button type="submit" class="login-btn">
+                    <i class="fas fa-sign-in-alt"></i> 登入系統
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 主要介面 -->
+    <div id="mainPage" class="main-container">
+        <button class="menu-hamburger" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-title">一九二八</div>
+                <div class="sidebar-subtitle" id="currentStore"></div>
+            </div>
+            <ul class="sidebar-menu" id="menuList"></ul>
+        </aside>
+
+        <main class="content-area">
+            <div class="content-header">
+                <h1 class="content-title" id="pageTitle">
+                    <i class="fas fa-home"></i>
+                    儀表板
+                </h1>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> 登出
+                </button>
+            </div>
+            <div id="contentArea"></div>
+        </main>
+    </div>
+
+    <script>
+        // 系統資料
+        const systemData = {
+            stores: {
+                '高流店': { inventory: { J500: 0, H100: 0 }, todayIssued: 0, todayRedeemed: 0 },
+                '一玖居酒屋': { inventory: { J500: 0, H100: 0 }, todayIssued: 0, todayRedeemed: 0 },
+                '鳳山店': { inventory: { J500: 0, H100: 0 }, todayIssued: 0, todayRedeemed: 0 }
+            },
+            vouchers: [],
+            applications: [],
+            projects: [],
+            allocations: []
+        };
+
+        let currentStore = '';
+        let currentMenu = 'dashboard';
+
+        // 登入密碼
+        const passwords = {
+            '高流店': 'gl1928',
+            '一玖居酒屋': 'yj1928',
+            '鳳山店': 'fs1928',
+            '總管理處': 'admin1928'
+        };
+
+        // 門店選單
+        const storeMenus = [
+            { id: 'dashboard', icon: 'fa-home', text: '儀表板' },
+            { id: 'apply', icon: 'fa-file-alt', text: '贈品券申請' },
+            { id: 'inbound', icon: 'fa-download', text: '入券作業' },
+            { id: 'issue', icon: 'fa-gift', text: '發券作業' },
+            { id: 'redeem', icon: 'fa-check-circle', text: '核銷作業' },
+            { id: 'query', icon: 'fa-search', text: '查詢作業' },
+            { id: 'void', icon: 'fa-times-circle', text: '作廢作業' },
+            { id: 'analysis', icon: 'fa-chart-line', text: '進階分析' }
+        ];
+
+        // 總管理處選單
+        const adminMenus = [
+            { id: 'dashboard', icon: 'fa-home', text: '儀表板' },
+            { id: 'allocate', icon: 'fa-truck', text: '撥券作業' },
+            { id: 'approve', icon: 'fa-check-square', text: '申請審核' },
+            { id: 'project', icon: 'fa-project-diagram', text: '活動專案管理' },
+            { id: 'inventory', icon: 'fa-warehouse', text: '庫存管理' },
+            { id: 'analysis', icon: 'fa-chart-bar', text: '進階分析' }
+        ];
+
+        // 登入處理
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const store = document.getElementById('storeSelect').value;
+            const password = document.getElementById('passwordInput').value;
+
+            if (!store) {
+                alert('請選擇門店');
+                return;
+            }
+
+            if (passwords[store] !== password) {
+                alert('密碼錯誤');
+                return;
+            }
+
+            currentStore = store;
+            login();
+        });
+
+        function login() {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('mainPage').style.display = 'block';
+            document.getElementById('currentStore').textContent = currentStore;
+
+            const menus = currentStore === '總管理處' ? adminMenus : storeMenus;
+            renderMenu(menus);
+            switchPage('dashboard');
+        }
+
+        function logout() {
+            if (confirm('確定要登出嗎？')) {
+                currentStore = '';
+                currentMenu = 'dashboard';
+                document.getElementById('mainPage').style.display = 'none';
+                document.getElementById('loginPage').style.display = 'flex';
+                document.getElementById('loginForm').reset();
+            }
+        }
+
+        function renderMenu(menus) {
+            const menuList = document.getElementById('menuList');
+            menuList.innerHTML = menus.map(menu => `
+                <li class="menu-item ${menu.id === currentMenu ? 'active' : ''}" 
+                    onclick="switchPage('${menu.id}')">
+                    <i class="fas ${menu.icon}"></i>
+                    <span>${menu.text}</span>
+                </li>
+            `).join('');
+        }
+
+        function switchPage(pageId) {
+            currentMenu = pageId;
+            const menus = currentStore === '總管理處' ? adminMenus : storeMenus;
+            renderMenu(menus);
+
+            const menu = menus.find(m => m.id === pageId);
+            document.getElementById('pageTitle').innerHTML = `
+                <i class="fas ${menu.icon}"></i>
+                ${menu.text}
+            `;
+
+            const contentArea = document.getElementById('contentArea');
+
+            if (currentStore === '總管理處') {
+                switch(pageId) {
+                    case 'dashboard':
+                        contentArea.innerHTML = renderAdminDashboard();
+                        break;
+                    case 'allocate':
+                        contentArea.innerHTML = renderAllocate();
+                        break;
+                    case 'approve':
+                        contentArea.innerHTML = renderApprove();
+                        break;
+                    case 'project':
+                        contentArea.innerHTML = renderProject();
+                        break;
+                    case 'inventory':
+                        contentArea.innerHTML = renderInventory();
+                        break;
+                    case 'analysis':
+                        contentArea.innerHTML = renderAdminAnalysis();
+                        break;
+                }
+            } else {
+                switch(pageId) {
+                    case 'dashboard':
+                        contentArea.innerHTML = renderStoreDashboard();
+                        break;
+                    case 'apply':
+                        contentArea.innerHTML = renderApply();
+                        break;
+                    case 'inbound':
+                        contentArea.innerHTML = renderInbound();
+                        break;
+                    case 'issue':
+                        contentArea.innerHTML = renderIssue();
+                        break;
+                    case 'redeem':
+                        contentArea.innerHTML = renderRedeem();
+                        break;
+                    case 'query':
+                        contentArea.innerHTML = renderQuery();
+                        break;
+                    case 'void':
+                        contentArea.innerHTML = renderVoid();
+                        break;
+                    case 'analysis':
+                        contentArea.innerHTML = renderStoreAnalysis();
+                        break;
+                }
+            }
+
+            if (window.innerWidth <= 768) {
+                document.getElementById('sidebar').classList.remove('mobile-open');
+            }
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('mobile-open');
+        }
+
+        // 門店儀表板
+        function renderStoreDashboard() {
+            const store = systemData.stores[currentStore];
+            return `
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <div class="dashboard-icon"><i class="fas fa-ticket-alt"></i></div>
+                        <div class="dashboard-label">今日發券數</div>
+                        <div class="dashboard-value">${store.todayIssued}</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="dashboard-icon"><i class="fas fa-check-circle"></i></div>
+                        <div class="dashboard-label">今日核銷數</div>
+                        <div class="dashboard-value">${store.todayRedeemed}</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="dashboard-icon"><i class="fas fa-coins"></i></div>
+                        <div class="dashboard-label">J券庫存(500元)</div>
+                        <div class="dashboard-value">${store.inventory.J500}</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="dashboard-icon"><i class="fas fa-money-bill-wave"></i></div>
+                        <div class="dashboard-label">H券庫存(100元)</div>
+                        <div class="dashboard-value">${store.inventory.H100}</div>
+                    </div>
+                </div>
+                <div class="form-card">
+                    <h3 style="color: #F5A623; margin-bottom: 15px;">
+                        <i class="fas fa-info-circle"></i> 庫存狀態
+                    </h3>
+                    <p style="line-height: 1.8;">
+                        目前系統處於初始狀態，請透過「申請」功能向總管理處申請券別，或等待總管理處撥券後使用「入券作業」進行入庫。
+                    </p>
+                </div>
+            `;
+        }
+
+        // 總管理處儀表板
+        function renderAdminDashboard() {
+            const totalJ = Object.values(systemData.stores).reduce((sum, s) => sum + s.inventory.J500, 0);
+            const totalH = Object.values(systemData.stores).reduce((sum, s) => sum + s.inventory.H100, 0);
+            const totalIssued = Object.values(systemData.stores).reduce((sum, s) => sum + s.todayIssued, 0);
+            const totalRedeemed = Object.values(systemData.stores).reduce((sum, s) => sum + s.todayRedeemed, 0);
+
+            return `
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <div class="dashboard-icon"><i class="fas fa-store"></i></div>
+                        <div class="dashboard-label">營運門店</div>
+                        <div class="dashboard-value">3</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="dashboard-icon"><i class="fas fa-ticket-alt"></i></div>
+                        <div class="dashboard-label">今日發券總數</div>
+                        <div class="dashboard-value">${totalIssued}</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="dashboard-icon"><i class="fas fa-check-circle"></i></div>
+                        <div class="dashboard-label">今日核銷總數</div>
+                        <div class="dashboard-value">${totalRedeemed}</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="dashboard-icon"><i class="fas fa-file-alt"></i></div>
+                        <div class="dashboard-label">待審核申請</div>
+                        <div class="dashboard-value">${systemData.applications.filter(a => a.status === 'pending').length}</div>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <h3 style="color: #F5A623; margin-bottom: 20px;">
+                        <i class="fas fa-warehouse"></i> 各店庫存一覽
+                    </h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>門店</th>
+                                <th>J券(500元)</th>
+                                <th>H券(100元)</th>
+                                <th>今日發券</th>
+                                <th>今日核銷</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${Object.keys(systemData.stores).map(store => `
+                                <tr>
+                                    <td>${store}</td>
+                                    <td>${systemData.stores[store].inventory.J500}</td>
+                                    <td>${systemData.stores[store].inventory.H100}</td>
+                                    <td>${systemData.stores[store].todayIssued}</td>
+                                    <td>${systemData.stores[store].todayRedeemed}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        // 申請作業
+        function renderApply() {
+            return `
+                <div class="form-card">
+                    <h3 style="color: #F5A623; margin-bottom: 20px;">
+                        <i class="fas fa-file-alt"></i> 申請贈品券
+                    </h3>
+                    <form onsubmit="submitApplication(event)">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">券別</label>
+                                <select id="applyType" class="form-select" required>
+                                    <option value="">請選擇</option>
+                                    <option value="J500">J券 (500元)</option>
+                                    <option value="H100">H券 (100元)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">申請數量</label>
+                                <input type="number" id="applyQuantity" class="form-input" min="1" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">申請原因</label>
+                            <textarea id="applyReason" class="form-input" rows="4" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i> 送出申請
+                        </button>
+                    </form>
+                </div>
+                <div class="table-container">
+                    <h3 style="color: #F5A623; margin-bottom: 20px;">
+                        <i class="fas fa-list"></i> 申請記錄
+                    </h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>申請日期</th>
+                                <th>券別</th>
+                                <th>數量</th>
+                                <th>狀態</th>
+                                <th>審核結果</th>
+                            </tr>
+                        </thead>
+                        <tbody id="applicationList">
+                            <tr>
+                                <td colspan="5">暫無申請記錄</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function submitApplication(e) {
+            e.preventDefault();
+            const type = document.getElementById('applyType').value;
+            const quantity = parseInt(document.getElementById('applyQuantity').value);
+            const reason = document.getElementById('applyReason').value;
+
+            const application = {
+                id: 'APP' + Date.now(),
+                store: currentStore,
+                type: type,
+                quantity: quantity,
+                reason: reason,
+                date: new Date().toLocaleDateString('zh-TW'),
+                status: 'pending'
+            };
+
+            systemData.applications.push(application);
+            alert('申請已送出，等待總管理處審核');
+            e.target.reset();
+            switchPage('apply');
+        }
+
+        // 入券作業
+        function renderInbound() {
+            return `
+                <div class="form-card">
+                    <h3 style="color: #F5A623; margin-bottom: 20px;">
+                        <i class="fas fa-download"></i> 入券作業
+                    </h3>
+                    <form onsubmit="processInbound(event)">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">券號</label>
+                                <input type="text" id="inboundVoucher" class="form-input" placeholder="請輸入券號" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-check"></i> 確認入券
+                        </button>
+                    </form>
+                </div>
+                <div class="alert alert-warning">
+                    <i class="fas fa-info-circle"></i>
+                    請確認券號格式正確（例：J500-001-0001 或 H100-001-0001）
+                </div>
+            `;
+        }
+
+        function processInbound(e) {
+            e.preventDefault();
+            const voucherNo = document.getElementById('inboundVoucher').value.trim();
+            
+            if (!voucherNo.match(/^(J500|H100)-\d{3}-\d{4}$/)) {
+                alert('券號格式錯誤');
+                return;
+            }
+
+            const type = voucherNo.startsWith('J500') ? 'J500' : 'H100';
+            systemData.stores[currentStore].inventory[type]++;
+            alert('入券成功');
+            e.target.reset();
+            switchPage('inbound');
+        }
+
+        // 發券作業
+        function renderIssue() {
+            return `
+                <div class="form-card">
+                    <h3 style="color: #F5A623; margin-bottom: 20px;">
+                        <i class="fas fa-gift"></i> 發券作業
+                    </h3>
+                    <form onsubmit="issueVoucher(event)">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">券別</label>
+                                <select id="issueType" class="form-select" required>
+                                    <option value="">請選擇</option>
+                                    <option value="J500">J券 (500元)</option>
+                                    <option value="H100">H券 (100元)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">發券數量</label>
+                                <input type="number" id="issueQuantity" class="form-input" min="1" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">顧客姓名</label>
+                                <input type="text" id="customerName" class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">顧客電話</label>
+                                <input type="tel" id="customerPhone" class="form-input" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-ticket-alt"></i> 發放券別
+                        </button>
+                    </form>
+                </div>
+            `;
+        }
+
+        function issueVoucher(e) {
+            e.preventDefault();
+            const type = document.getElementById('issueType').value;
+            const quantity = parseInt(document.getElementById('issueQuantity').value);
+            const customerName = document.getElementById('customerName').value;
+            const customerPhone = document.getElementById('customerPhone').value;
+
+            if (systemData.stores[currentStore].inventory[type] < quantity) {
+                alert('庫存不足');
+                return;
+            }
+
+            for (let i = 0; i < quantity; i++) {
+                const voucherNo = generateVoucherNo(type);
+                systemData.vouchers.push({
+                    no: voucherNo,
+                    type: type,
+                    issueStore: currentStore,
+                    issueDate: new Date().toLocaleDateString('zh-TW'),
+                    status: 'issued',
+                    customer: { name: customerName, phone: customerPhone }
+                });
+            }
+
+            systemData.stores[currentStore].inventory[type] -= quantity;
+            systemData.stores[currentStore].todayIssued += quantity;
+            alert(`成功發放 ${quantity} 張券`);
+            e.target.reset();
+            switchPage('issue');
+        }
+
+        function generateVoucherNo(type) {
+            const prefix = type;
+            const storeCode = currentStore === '高流店' ? '001' : currentStore === '一玖居酒屋' ? '002' : '003';
+            const serial = String(systemData.vouchers.filter(v => v.issueStore === currentStore).length + 1).padStart(4, '0');
+            return `${prefix}-${storeCode}-${serial}`;
+        }
+
+        // 核銷作業
+        function renderRedeem() {
+            return `
+                <div class="form-card">
+                    <h3 style="color: #F5A623; margin-bottom: 20px;">
+                        <i class="fas fa-check-circle"></i> 核銷作業
+                    </h3>
+                    <form onsubmit="checkVoucher(event)">
+                        <div class="form-group">
+                            <label class="form-label">券號</label>
+                            <input type="text" id="redeemVoucher" class="form-input" placeholder="請輸入券號" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search"></i> 查詢券號
+                        </button>
+                    </form>
+                </div>
+                <div id="voucherResult"></div>
+            `;
+        }
+
+        function checkVoucher(e) {
+            e.preventDefault();
+            const voucherNo = document.getElementById('redeemVoucher').value.trim();
+            const voucher = systemData.vouchers.find(v => v.no === voucherNo);
+
+            const resultDiv = document.getElementById('voucherResult');
+
+            if (!voucher) {
+                resultDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-times-circle"></i>
+                        查無此券號
+                    </div>
+                `;
+                return;
+            }
+
+            if (voucher.status === 'redeemed') {
+                resultDiv.innerHTML = `
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        此券已被核銷
+                    </div>
+                `;
+                return;
+            }
+
+            const isCrossStore = voucher.issueStore !== currentStore;
+
+            resultDiv.innerHTML = `
+                <div class="voucher-card">
+                    <div class="voucher-card-header">
+                        <i class="fas fa-ticket-alt"></i> 券號資訊
+                    </div>
+                    <div class="voucher-info">
+                        <div class="voucher-info-item">
+                            <div class="voucher-info-label">券號</div>
+                            <div class="voucher-info-value">${voucher.no}</div>
+                        </div>
+                        <div class="voucher-info-item">
+                            <div class="voucher-info-label">券別</div>
+                            <div class="voucher-info-value">${voucher.type === 'J500' ? 'J券 500元' : 'H券 100元'}</div>
+                        </div>
+                        <div class="voucher-info-item">
+                            <div class="voucher-info-label">發券門店</div>
+                            <div class="voucher-info-value" style="color: ${isCrossStore ? '#F5A623' : '#F5F0E6'}">${voucher.issueStore}</div>
+                        </div>
+                        <div class="voucher-info-item">
+                            <div class="voucher-info-label">發券日期</div>
+                            <div class="voucher-info-value">${voucher.issueDate}</div>
+                        </div>
+                        <div class="voucher-info-item">
+                            <div class="voucher-info-label">狀態</div>
+                            <div class="voucher-info-value" style="color: #28a745">🟢 已發放 - 流通中</div>
+                        </div>
+                    </div>
+                    ${isCrossStore ? `
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exchange-alt"></i>
+                            此券為 <strong>${voucher.issueStore}</strong> 發出，在您的店核銷屬於<strong>跨店核銷</strong>
+                        </div>
+                    ` : ''}
+                    <button class="btn btn-success" onclick="confirmRedeem('${voucherNo}', ${isCrossStore})">
+                        <i class="fas fa-check"></i> 確認核銷
+                    </button>
+                </div>
+            `;
+        }
+
+        function confirmRedeem(voucherNo, isCrossStore) {
+            const voucher = systemData.vouchers.find(v => v.no === voucherNo);
+            voucher.status = 'redeemed';
+            voucher.redeemStore = currentStore;
+            voucher.redeemDate = new Date().toLocaleDateString('zh-TW');
+
+            systemData.stores[currentStore].todayRedeemed++;
+
+            alert(isCrossStore ? '跨店核銷成功！' : '核銷成功！');
+            switchPage('redeem');
+        }
+
+        // 查詢作業
+        function renderQuery() {
+            const storeVouchers = systemData.vouchers.filter(v => v.issueStore === currentStore || v.redeemStore === currentStore);
+
+            return `
+                <div class="form-card">
+                    <h3 style="color: #F5A623; margin-bottom: 20px;">
+                        <i class="fas fa-search"></i> 查詢條件
+                    </h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">查詢類型</label>
+                            <select id="queryType" class="form-select">
+                                <option value="all">全部</option>
+                                <option value="券號">券號</option>
+                                <option value="狀態">狀態</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">關鍵字</label>
+                            <input type="text" id="queryKeyword" class="form-input" placeholder="請輸入關鍵字">
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-primary" onclick="performQuery()">
+                            <i class="fas fa-search"></i> 查詢
+                        </button>
+                        <button class="btn btn-success" onclick="exportToExcel()">
+                            <i class="fas fa-file-excel"></i> 匯出Excel
+                        </button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <h3 style="color: #F5A623; margin-bottom: 20px;">
+                        <i class="fas fa-list"></i> 查詢結果
+                    </h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>券號</th>
+                                <th>券別</th>
+                                <th>發券日期</th>
+                                <th>發券門店</th>
+                                <th>狀態</th>
+                                <th>核銷門店</th>
+                                <th>核銷日期</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${storeVouchers.length === 0 ? `
+                                <tr>
+                                    <td colspan="7">暫無資料</td>
+                                </tr>
+                            ` : storeVouchers.map(v => `
+                                <tr>
+                                    <td>${v.no}</td>
+                                    <td>${v.type === 'J500' ? 'J券 500元' : 'H券 100元'}</td>
+                                    <td>${v.issueDate}</td>
+                                    <td>${v.issueStore}</td>
+                                    <td>${v.status === 'issued' ? '🟢 已發放' : v.status === 'redeemed' ? '✅ 已核銷' : '❌ 已作廢'}</td>
+                                    <td>${v.redeemStore || '-'}</td>
+                                    <td>${v.redeemDate || '-'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function performQuery() {
+            alert('查詢功能執行中...');
+            switchPage('query');
+        }
+
+        function exportToExcel() {
+            const wb = XLSX.utils.book_new();
+            const storeVouchers = systemData.vouchers.filter(v => v.issueStore === currentStore || v.redeemStore === currentStore);
+            
+            const data = storeVouchers.map(v => ({
+                '券號': v.no,
+                '券別': v.type === 'J500' ? 'J券 500元' : 'H券 100元',
+                '發券日期': v.issueDate,
+                '發券門店': v.issueStore,
+                '狀態': v.status === 'issued' ? '已發放' : v.status === 'redeemed' ? '已核銷' : '已作廢',
+                '核銷門店': v.redeemStore || '-',
+                '核銷日期': v.redeemDate || '-'
+            }));
+
+            const ws = XLSX.utils.json_to_sheet(data);
+            XLSX.utils.book_append_sheet(wb, ws, '查詢結果');
+            XLSX.writeFile(wb, `贈品券查詢結果_${currentStore}_${new Date().toLocaleDateString('zh-TW')}.xlsx`);
+        }
+
+        // 作廢作業
+        function renderVoid() {
+            return `
+                <div class="form-card">
+                    <h3 style="color: #F5A623; margin-bottom: 20px;">
+                        <i class="fas fa-times-circle"></i> 作廢作業
+                    </h3>
+                    <form onsubmit="voidVoucher(event)">
+                        <div class="form-group">
+                            <label class="form-label">券號</label>
+                            <input type="text" id="voidVoucher" class="form-input" placeholder="請輸入券號" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">作廢原因</label>
+                            <textarea id="voidReason" class="form-input" rows="4" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-times"></i> 確認作廢
+                        </button>
+                    </form>
+                </div>
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    作廢後的券別將無法恢復，請謹慎操作
+                </div>
+            `;
+        }
+
+        function voidVoucher(e) {
+            e.preventDefault();
+            const voucherNo = document.getElementById('voidVoucher').value.trim();
+            const reason = document.getElementById('voidReason').value;
+            const voucher = systemData.vouchers.find(v => v.no === voucherNo);
+
+            if (!voucher) {
+                alert('查無此券號');
+                return;
+            }
+
+            if (voucher.status !== 'issued') {
+                alert('此券無法作廢');
+                return;
+            }
+
+            if (confirm('確定要作廢此券嗎？')) {
+                voucher.status = 'voided';
+                voucher.voidReason = reason;
+                voucher.voidDate = new Date().toLocaleDateString('zh-TW');
+                alert('作廢成功');
+                e.target.reset();
+            }
+        }
+
+        // 門店進階分析
+        function renderStoreAnalysis() {
+            return `
+                <div class="tabs">
+                    <div class="tab active" onclick="switchAnalysisTab('performance')">績效分析</div>
+                    <div class="tab" onclick="switchAnalysisTab('monthly')">月份比較</div>
+                    <div class="tab" onclick="switchAnalysisTab('yearly')">年度比較</div>
+                    <div class="tab" onclick="switchAnalysisTab('crossStore')">跨店核銷統計</div>
+                </div>
+                <div id="analysisContent">
+                    ${renderPerformanceAnalysis()}
+                </div>
+            `;
+        }
+
+        function switchAnalysisTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            const content = document.getElementById('analysisContent');
+            switch(tab) {
+                case 'performance':
+                    content.innerHTML = renderPerformanceAnalysis();
+                    break;
+                case 'monthly':
+                    content.innerHTML = renderMonthlyComparison();
+                    break;
+                case 'yearly':
+                    content.innerHTML = renderYearlyComparison();
+                    break;
+                case 'crossStore':
+                    content.innerHTML = renderCrossStoreStats();
+                    break;
+            }
+        }
+
+        function renderPerformanceAnalysis() {
+            return `
+                <div class="form-card">
+                    <h3 style="color: #F5A623; margin-bottom: 20px;">
+                        <i class="fas fa-chart-line"></i> 績效分析
+                    </h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">月業績金額</label>
+                            <input type="number" class="form-input" placeholder="請輸入業績金額">
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-primary" style="margin-top: 30px;">
+                                <i class="fas fa-calculator"></i> 計算比率
+                            </button>
+                        </div>
+                    </div>
+                    <div class="alert alert-warning">
+                        <i class="fas fa-info-circle"></i>
+                        請輸入業績金額後查詢核銷率、可使用率、逾期作廢率等數據
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderMonthlyComparison() {
+            return `
+                <div class="form-card">
+                    <h3 style="color: #F5A623; margin-bottom: 20px;">
+                        <i class="fas fa-calendar-alt"></i> 月份比較
+                    </h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">起始月份</label>
+                            <input type="month" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">結束月份</label>
+                            <input type="month" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-primary" style="margin-top: 30px;">
+                                <i class="fas fa-search"></i> 查詢
+                            </button>
+                        </div>
+                    </div>
+                    <div class="alert alert-warning">
+                        <i class="fas fa-info-circle"></i>
+                        請選擇月份區間後查詢環比增減趨勢
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderYearlyComparison() {
+            return `
+                <div class="form-card">
+                    <h3 style="color: #F5A623; margin-bottom: 20px;">
+                        <i class="fas fa-chart-bar"></i> 年度比較
+                    </h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">比較年度</label>
+                            <select class="form-select">
+                                <option value="">請選擇</option>
+                                <option value="2024">2024年</option>
+                                <option value="2025">2025年</option>
+                                <option value="2026">2026年</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-primary" style="margin-top: 30px;">
+                                <i class="fas fa-search"></i> 查詢
+                            </button>
+                        </div>
+                    </div>
+                    <div class="alert alert-warning">
+                        <i class="fas fa-info-circle"></i>
+                        請選擇年度後查詢年度增長率
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderCrossStoreStats() {
+            const outflow = systemData.vouchers.filter(v => v.issueStore === currentStore && v.redeemStore && v.redeemStore !== currentStore);
+            const inflow = systemData.vouchers.filter(v => v.redeemStore === currentStore && v.issueStore !== currentStore);
+
+            return `
+                <div class="table-container">
+                    <h3 style="color: #F5A623; margin-bottom: 20px;">
+                        <i class="fas fa-arrow-right"></i> 本店發券被他店核銷 (外流)
+                    </h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>核銷門店</th>
+                                <th>J券(500元)</th>
+                                <th>H券(100元)</th>
+                                <th>金額</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${outflow.length === 0 ? `
+                                <tr>
+                                    <td colspan="4">暫無跨店核銷記錄</td>
+                                </tr>
+                            ` : `
+                                <tr>
+                                    <td colspan="4">暫無跨店核銷記錄</td>
+                                </tr>
+                            `}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table-container" style="margin-top: 30px;">
+                    <h3 style="color: #F5A623; margin-bottom: 20px;">
+                        <i class="fas fa-arrow-left"></i> 他店發券在本店核銷 (流入)
+                    </h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>發券門店</th>
+                                <th>J券(500元)</th>
+                                <th>H券(100元)</th>
+                                <th>金額</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${inflow.length === 0 ? `
+                                <tr>
+                                    <td colspan="4">暫無跨店核銷記錄</td>
+                                </tr>
+                            ` : `
+                                <tr>
+                                    <td colspan="4">暫無跨店核銷記錄</td>
+                                </tr>
+                            `}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        // 總管理處功能
+        function renderAllocate() {
+            return `
+                <div class="form-card">
+                    <h3 style="color: #F5A623; margin-bottom: 20px;">
+                        <i class="fas fa-truck"></i> 撥券作業
+                    </h3>
+                    <form onsubmit="allocateVouchers(event)">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">目標門店</label>
+                                <select id="allocateStore" class="form-select" required>
+                                    <option value="">請選擇</option>
+                                    <option value="高流店">高流店</option>
+                                    <option value="一玖居酒屋">一玖居酒屋</option>
+                                    <option value="鳳山店">鳳山店</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">券別</label>
+                                <select id="allocateType" class="form-select" required>
+                                    <option value="">請選擇</option>
+                                    <option value="J500">J券 (500元)</option>
+                                    <option value="H100">H券 (100元)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">撥券數量</label>
+                                <input type="number" id="allocateQuantity" class="form-input" min="1" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i> 確認撥券
+                        </button>
+                    </form>
+                </div>
+            `;
+        }
+
+        function allocateVouchers(e) {
+            e.preventDefault();
+            const store = document.getElementById('allocateStore').value;
+            const type = document.getElementById('allocateType').value;
+            const quantity = parseInt(document.getElementById('allocateQuantity').value);
+
+            systemData.stores[store].inventory[type] += quantity;
+            systemData.allocations.push({
+                date: new Date().toLocaleDateString('zh-TW'),
+                store: store,
+                type: type,
+                quantity: quantity
+            });
+
+            alert(`成功撥券 ${quantity} 張至 ${store}`);
+            e.target.reset();
+        }
+
+        function renderApprove() {
+            const pendingApps = systemData.applications.filter(a => a.status === 'pending');
+
+            return `
+                <div class="table-container">
+                    <h3 style="color: #F5A623; margin-bottom: 20px;">
+                        <i class="fas fa-check-square"></i> 待審核申請
+                    </h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>申請編號</th>
+                                <th>申請門店</th>
+                                <th>券別</th>
+                                <th>數量</th>
+                                <th>申請日期</th>
+                                <th>申請原因</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${pendingApps.length === 0 ? `
+                                <tr>
+                                    <td colspan="7">暫無待審核申請</td>
+                                </tr>
+                            ` : pendingApps.map(app => `
+                                <tr>
+                                    <td>${app.id}</td>
+                                    <td>${app.store}</td>
+                                    <td>${app.type === 'J500' ? 'J券 500元' : 'H券 100元'}</td>
+                                    <td>${app.quantity}</td>
+                                    <td>${app.date}</td>
+                                    <td>${app.reason}</td>
+                                    <td>
+                                        <button class="btn btn-success" onclick="approveApplication('${app.id}')">核准</button>
+                                        <button class="btn btn-danger" onclick="rejectApplication('${app.id}')">駁回</button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function approveApplication(id) {
+            const app = systemData.applications.find(a => a.id === id);
+            app.status = 'approved';
+            systemData.stores[app.store].inventory[app.type] += app.quantity;
+            alert('已核准申請');
+            switchPage('approve');
+        }
+
+        function rejectApplication(id) {
+            const app = systemData.applications.find(a => a.id === id);
+            app.status = 'rejected';
+            alert('已駁回申請');
+            switchPage('approve');
+        }
+
+        function renderProject() {
+            return `
+                <div class="form-card">
+                    <h3 style="color: #F5A623; margin-bottom: 20px;">
+                        <i class="fas fa-project-diagram"></i> 新增活動專案
+                    </h3>
+                    <form onsubmit="createProject(event)">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">專案名稱</label>
+                                <input type="text" id="projectName" class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">活動期間</label>
+                                <input type="date" id="projectStart" class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">結束日期</label>
+                                <input type="date" id="projectEnd" class="form-input" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> 建立專案
+                        </button>
+                    </form>
+                </div>
+                <div class="table-container">
+                    <h3 style="color: #F5A623; margin-bottom: 20px;">
+                        <i class="fas fa-list"></i> 活動專案列表
+                    </h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>專案名稱</th>
+                                <th>開始日期</th>
+                                <th>結束日期</th>
+                                <th>狀態</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${systemData.projects.length === 0 ? `
+                                <tr>
+                                    <td colspan="4">暫無活動專案</td>
+                                </tr>
+                            ` : systemData.projects.map(p => `
+                                <tr>
+                                    <td>${p.name}</td>
+                                    <td>${p.startDate}</td>
+                                    <td>${p.endDate}</td>
+                                    <td>${p.status}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function createProject(e) {
+            e.preventDefault();
+            const name = document.getElementById('projectName').value;
+            const startDate = document.getElementById('projectStart').value;
+            const endDate = document.getElementById('projectEnd').value;
+
+            systemData.projects.push({
+                id: 'PRJ' + Date.now(),
+                name: name,
+                startDate: startDate,
+                endDate: endDate,
+                status: '進行中'
+            });
+
+            alert('專案建立成功');
+            e.target.reset();
+            switchPage('project');
+        }
+
+        function renderInventory() {
+            return `
+                <div class="table-container">
+                    <h3 style="color: #F5A623; margin-bottom: 20px;">
+                        <i class="fas fa-warehouse"></i> 庫存管理
+                    </h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>門店</th>
+                                <th>J券(500元)</th>
+                                <th>H券(100元)</th>
+                                <th>總計</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${Object.keys(systemData.stores).map(store => {
+                                const inv = systemData.stores[store].inventory;
+                                return `
+                                    <tr>
+                                        <td>${store}</td>
+                                        <td>${inv.J500}</td>
+                                        <td>${inv.H100}</td>
+                                        <td>${inv.J500 + inv.H100}</td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function renderAdminAnalysis() {
+            return `
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <div class="dashboard-icon"><i class="fas fa-ticket-alt"></i></div>
+                        <div class="dashboard-label">全公司發券數</div>
+                        <div class="dashboard-value">${systemData.vouchers.length}</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="dashboard-icon"><i class="fas fa-check-circle"></i></div>
+                        <div class="dashboard-label">全公司核銷數</div>
+                        <div class="dashboard-value">${systemData.vouchers.filter(v => v.status === 'redeemed').length}</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="dashboard-icon"><i class="fas fa-percentage"></i></div>
+                        <div class="dashboard-label">核銷率</div>
+                        <div class="dashboard-value">${systemData.vouchers.length === 0 ? 0 : (systemData.vouchers.filter(v => v.status === 'redeemed').length / systemData.vouchers.length * 100).toFixed(1)}%</div>
+                    </div>
+                </div>
+                <div class="table-container" style="margin-top: 30px;">
+                    <h3 style="color: #F5A623; margin-bottom: 20px;">
+                        <i class="fas fa-chart-bar"></i> 門店比較分析
+                    </h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>門店</th>
+                                <th>發券數</th>
+                                <th>核銷數</th>
+                                <th>核銷率</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${Object.keys(systemData.stores).map(store => {
+                                const issued = systemData.vouchers.filter(v => v.issueStore === store).length;
+                                const redeemed = systemData.vouchers.filter(v => v.issueStore === store && v.status === 'redeemed').length;
+                                const rate = issued === 0 ? 0 : (redeemed / issued * 100).toFixed(1);
+                                return `
+                                    <tr>
+                                        <td>${store}</td>
+                                        <td>${issued}</td>
+                                        <td>${redeemed}</td>
+                                        <td>${rate}%</td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+    </script>
+<script defer="" src="./index_files/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon="{&quot;version&quot;:&quot;2024.11.0&quot;,&quot;token&quot;:&quot;4edd5f8ec12a48cfa682ab8261b80a79&quot;,&quot;server_timing&quot;:{&quot;name&quot;:{&quot;cfCacheStatus&quot;:true,&quot;cfEdge&quot;:true,&quot;cfExtPri&quot;:true,&quot;cfL4&quot;:true,&quot;cfOrigin&quot;:true,&quot;cfSpeedBrain&quot;:true},&quot;location_startswith&quot;:null}}" crossorigin="anonymous"></script>
+
+
+    <script id="html_badge_script1">
+        window.__genspark_remove_badge_link = "https://www.genspark.ai/api/html_badge/" +
+            "remove_badge?token=To%2FBnjzloZ3UfQdcSaYfDkHer1lAYUI4dngRKlfEU8gUbWM6bdq2uDG5R6u0YgIuFtnKDCvwxB6KYHhLGDQWDysHXnVTDDemzHWHMinSr9OYZdxi1Tm%2BPlQoA67dmcCRsWfPVuRqkHJv0m4yKN5zeeryJs8A%2BDybqrA6ruSsWt343Ou9cfP6tjMQw2GdCM3qesCouUEQQekdEhaIqp5vuRiExX9%2B24vIibK4Sh8n0uEEpo7prPctvPIZdFPgBJ4vfBMS5A3lWv3lfTZfQfvN9VcXZwwEKyU90in0kjWbLX4kzuUuLUFn10CPotYQpDqS4Etc4OR%2FgC6jmLqwMqwGX8bP09GnOFfFt6bRiyqHXSRA2AFRukCSWM1ehXz9u2drhJznh87EVZ9%2BO8NiiZpp%2FqjksUO0e%2F1Bq3GlloB%2FzCeheAfom75U1mR4xejMrEFNum4LFIxoCeMt3syABSkx%2BuA00l4gASB7w6dhiQNwJpZ4qGiBSTQ6LarE5cefp%2FT66WCr0FR%2FdLWIgOQxnRMF9SSQMMhyuxr5FbJSqszvCO41QSojBFEmgf5dgjbiE520LsdBtqhIh6qFkNM%2BtOMWKarH6EnOCa5hgi2JqTrc1vg%3D";
+        window.__genspark_locale = "zh-TW";
+        window.__genspark_token = "To/BnjzloZ3UfQdcSaYfDkHer1lAYUI4dngRKlfEU8gUbWM6bdq2uDG5R6u0YgIuFtnKDCvwxB6KYHhLGDQWDysHXnVTDDemzHWHMinSr9OYZdxi1Tm+PlQoA67dmcCRsWfPVuRqkHJv0m4yKN5zeeryJs8A+DybqrA6ruSsWt343Ou9cfP6tjMQw2GdCM3qesCouUEQQekdEhaIqp5vuRiExX9+24vIibK4Sh8n0uEEpo7prPctvPIZdFPgBJ4vfBMS5A3lWv3lfTZfQfvN9VcXZwwEKyU90in0kjWbLX4kzuUuLUFn10CPotYQpDqS4Etc4OR/gC6jmLqwMqwGX8bP09GnOFfFt6bRiyqHXSRA2AFRukCSWM1ehXz9u2drhJznh87EVZ9+O8NiiZpp/qjksUO0e/1Bq3GlloB/zCeheAfom75U1mR4xejMrEFNum4LFIxoCeMt3syABSkx+uA00l4gASB7w6dhiQNwJpZ4qGiBSTQ6LarE5cefp/T66WCr0FR/dLWIgOQxnRMF9SSQMMhyuxr5FbJSqszvCO41QSojBFEmgf5dgjbiE520LsdBtqhIh6qFkNM+tOMWKarH6EnOCa5hgi2JqTrc1vg=";
+    </script>
+    
+    <script id="html_notice_dialog_script" src="./index_files/notice_dialog.js.下載"></script>
+    </body></html>
